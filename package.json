@@ -1,7 +1,7 @@
 {
   "name": "@ferry-core/oar",
   "version": "0.0.1",
-  "description": "a RESTful HTTP request lib with default config",
+  "description": "A RESTful HTTP request lib with default config",
   "main": "dist/oar.cjs.min.js",
   "module": "dist/oar.esm.min.js",
   "unpkg": "dist/oar.umd.min.js",
