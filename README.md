@@ -39,7 +39,7 @@ response 拦截器
 ### 安装
 
 ```bash
-npm i -D @ferry-core/oar # 或 yarn add -D struk
+npm i -D @ferry-core/oar # 或 yarn add -D @ferry-core/oar
 ```
 
 ## License
@@ -56,7 +56,7 @@ npm i -D @ferry-core/oar # 或 yarn add -D struk
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license]: https://github.com/jsynowiec/node-typescript-boilerplate/blob/main/LICENSE
 [sponsor-badge]: https://img.shields.io/badge/♥-Sponsor-fc0fb5.svg
-[sponsor]: https://github.com/YanPanMichael/struk
+[sponsor]: https://github.com/YanPanMichael/oar
 [jest]: https://facebook.github.io/jest/
 [eslint]: https://github.com/eslint/eslint
 [wiki-js-tests]: https://github.com/jsynowiec/node-typescript-boilerplate/wiki/Unit-tests-in-plain-JavaScript
