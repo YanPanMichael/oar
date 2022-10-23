@@ -1,7 +1,7 @@
 {
   "name": "@ferry-core/oar",
   "version": "0.0.1",
-  "description": "a RESTful Http lib base on axios",
+  "description": "a RESTful HTTP request lib with default config",
   "main": "dist/oar.cjs.min.js",
   "module": "dist/oar.esm.min.js",
   "unpkg": "dist/oar.umd.min.js",
@@ -11,7 +11,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "cross-env BABEL_ENV=test NODE_ENV=testing jest --coverage",
+    "test": "cross-env BABEL_ENV=test NODE_ENV=testing jest --coverage -t='ColorPicker'",
     "test:watch": "jest --watch",
     "preversion": "npm run build && npm run test",
     "build": "cross-env NODE_ENV=production struk build --source=ts",
@@ -23,28 +23,37 @@
     "changelog:help": "conventional-changelog --help",
     "changelog": "conventional-changelog -p simple -i CHANGELOG.md -s -r 0"
   },
-  "author": "yanpan",
+  "author": "Michael Pan",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YanPanMichael/oar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YanPanMichael/oar/issues",
+    "email": "1214863281@qq.com"
+  },
+  "homepage": "https://github.com/YanPanMichael/oar",
   "dependencies": {
     "axios": "^0.27.2",
-    "qs": "^6.9.0"
+    "qs": "^6.11.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@commitlint/prompt": "^16.2.4",
-    "@types/jest": "^27.0.1",
-    "@types/node": "~16.11",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.11.68",
     "@types/qs": "^6.9.7",
     "@typescript-eslint/eslint-plugin": "~5.14",
     "@typescript-eslint/parser": "~5.14",
-    "axios-mock-adapter": "^1.15.0",
+    "axios-mock-adapter": "^1.21.2",
     "babel-jest": "^27.3.0",
     "conventional-changelog-cli": "^2.1.1",
     "cross-env": "5.2.0",
     "eslint": "~8.11",
     "eslint-config-prettier": "~8.5",
-    "eslint-plugin-jest": "^26.1.5",
+    "eslint-plugin-jest": "^26.9.0",
     "husky": "^4.3.8",
     "jest": "~27.5",
     "qk-release": "^1.1.2",

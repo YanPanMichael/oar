@@ -1,9 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <title>Oar - get example</title>
     <!-- <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/> -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body class="container">
     <h1>oarGet</h1>
@@ -11,25 +16,41 @@
 
     <script src="/oar.umd.js"></script>
     <script>
-        // var oarGet = require('./oar.umd.js').oarGet;
-oar.get('/get/server')
-    .then(function (response) {
-        document.getElementById('people').innerHTML = response.data.map(function (person) {
-            return (
+      // var oarGet = require('./oar.umd.js').oarGet;
+      oar
+        .get('/get/server')
+        .then(function (response) {
+          document.getElementById('people').innerHTML = response.data
+            .map(function (person) {
+              return (
                 '<li class="row">' +
-                '<img src="https://avatars.githubusercontent.com/u/' + person.avatar + '?s=50" class="col-md-1"/>' +
+                '<img src="https://avatars.githubusercontent.com/u/' +
+                person.avatar +
+                '?s=50" class="col-md-1"/>' +
                 '<div class="col-md-3">' +
-                '<strong>' + person.name + '</strong>' +
-                '<div>Github: <a href="https://github.com/' + person.github + '" target="_blank">' + person.github + '</a></div>' +
-                '<div>Twitter: <a href="https://twitter.com/' + person.twitter + '" target="_blank">' + person.twitter + '</a></div>' +
+                '<strong>' +
+                person.name +
+                '</strong>' +
+                '<div>Github: <a href="https://github.com/' +
+                person.github +
+                '" target="_blank">' +
+                person.github +
+                '</a></div>' +
+                '<div>Twitter: <a href="https://twitter.com/' +
+                person.twitter +
+                '" target="_blank">' +
+                person.twitter +
+                '</a></div>' +
                 '</div>' +
                 '</li><br/>'
-            );
-        }).join('');
-    })
-    .catch(function (err) {
-        document.getElementById('people').innerHTML = '<li class="text-danger">' + err.message + '</li>';
-    });
+              );
+            })
+            .join('');
+        })
+        .catch(function (err) {
+          document.getElementById('people').innerHTML =
+            '<li class="text-danger">' + err.message + '</li>';
+        });
     </script>
   </body>
 </html>

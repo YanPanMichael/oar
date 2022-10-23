@@ -1,7 +1,4 @@
-import setCsrfToken from './csrf'
-import setVisitId from './visit-id'
+import setCsrfToken from './csrf';
+import setVisitId from './visit-id';
 
-export {
-  setCsrfToken,
-  setVisitId
-}
+export { setCsrfToken, setVisitId };

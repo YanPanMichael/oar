@@ -51,11 +51,11 @@ export interface OarRequestConfig extends AxiosRequestConfig {
      */
     csrfKeyName?: string | string[];
 }
-interface OarResponse<T = any> extends AxiosResponse<T> {
+export interface OarResponse<T = any> extends AxiosResponse<T> {
     config: OarRequestConfig;
     fromLocalCache?: boolean;
 }
-declare type OarPromise<T = any> = Promise<OarResponse<T>>;
+export declare type OarPromise<T = any> = Promise<OarResponse<T>>;
 export interface Global extends Window {
     oar?: OarStatic;
     __custom_cookie?: any;

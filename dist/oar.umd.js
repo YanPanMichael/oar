@@ -1,7 +1,7 @@
 /*!
 * @ferry-core/oar with v0.0.1
-* Author: yanpan
-* Built on 2022-05-01, 18:33:42
+* Author: Michael Pan
+* Built on 2022-10-24, 00:00:38
 * Released under the MIT License Copyright (c) 2022
 */
 (function(g,f){typeof exports==='object'&&typeof module!=='undefined'?module.exports=f():typeof define==='function'&&define.amd?define(f):(g=typeof globalThis!=='undefined'?globalThis:g||self,g.oar=f());})(this,(function(){'use strict';var bind = function bind(fn, thisArg) {
@@ -2454,7 +2454,7 @@ var callBound = function callBoundIntrinsic(name, allowMissing) {
 		return callBind(intrinsic);
 	}
 	return intrinsic;
-};var _nodeResolve_empty = {};var _nodeResolve_empty$1=/*#__PURE__*/Object.freeze({__proto__:null,'default':_nodeResolve_empty});var require$$0 = /*@__PURE__*/getAugmentedNamespace(_nodeResolve_empty$1);var hasMap = typeof Map === 'function' && Map.prototype;
+};var _nodeResolve_empty = {};var _nodeResolve_empty$1=/*#__PURE__*/Object.freeze({__proto__:null,'default':_nodeResolve_empty});var utilInspect = /*@__PURE__*/getAugmentedNamespace(_nodeResolve_empty$1);var hasMap = typeof Map === 'function' && Map.prototype;
 var mapSizeDescriptor = Object.getOwnPropertyDescriptor && hasMap ? Object.getOwnPropertyDescriptor(Map.prototype, 'size') : null;
 var mapSize = hasMap && mapSizeDescriptor && typeof mapSizeDescriptor.get === 'function' ? mapSizeDescriptor.get : null;
 var mapForEach = hasMap && Map.prototype.forEach;
@@ -2521,8 +2521,9 @@ function addNumericSeparator(num, str) {
     return $replace.call(str, sepRegex, '$&_');
 }
 
-var inspectCustom = require$$0.custom;
-var inspectSymbol = inspectCustom && isSymbol(inspectCustom) ? inspectCustom : null;
+
+var inspectCustom = utilInspect.custom;
+var inspectSymbol = isSymbol(inspectCustom) ? inspectCustom : null;
 
 var objectInspect = function inspect_(obj, options, depth, seen) {
     var opts = options || {};
@@ -2612,7 +2613,7 @@ var objectInspect = function inspect_(obj, options, depth, seen) {
         return inspect_(value, opts, depth + 1, seen);
     }
 
-    if (typeof obj === 'function') {
+    if (typeof obj === 'function' && !isRegExp$1(obj)) { // in older engines, regexes are callable
         var name = nameOf(obj);
         var keys = arrObjKeys(obj, inspect);
         return '[Function' + (name ? ': ' + name : ' (anonymous)') + ']' + (keys.length > 0 ? ' { ' + $join.call(keys, ', ') + ' }' : '');
@@ -2642,15 +2643,15 @@ var objectInspect = function inspect_(obj, options, depth, seen) {
     }
     if (isError(obj)) {
         var parts = arrObjKeys(obj, inspect);
-        if ('cause' in obj && !isEnumerable.call(obj, 'cause')) {
+        if (!('cause' in Error.prototype) && 'cause' in obj && !isEnumerable.call(obj, 'cause')) {
             return '{ [' + String(obj) + '] ' + $join.call($concat.call('[cause]: ' + inspect(obj.cause), parts), ', ') + ' }';
         }
         if (parts.length === 0) { return '[' + String(obj) + ']'; }
         return '{ [' + String(obj) + '] ' + $join.call(parts, ', ') + ' }';
     }
     if (typeof obj === 'object' && customInspect) {
-        if (inspectSymbol && typeof obj[inspectSymbol] === 'function') {
-            return obj[inspectSymbol]();
+        if (inspectSymbol && typeof obj[inspectSymbol] === 'function' && utilInspect) {
+            return utilInspect(obj, { depth: maxDepth - depth });
         } else if (customInspect !== 'symbol' && typeof obj.inspect === 'function') {
             return obj.inspect();
         }
@@ -3407,6 +3408,7 @@ var stringify = function stringify(
     object,
     prefix,
     generateArrayPrefix,
+    commaRoundTrip,
     strictNullHandling,
     skipNulls,
     encoder,
@@ -3471,7 +3473,7 @@ var stringify = function stringify(
                 for (var i = 0; i < valuesArray.length; ++i) {
                     valuesJoined += (i === 0 ? '' : ',') + formatter(encoder(valuesArray[i], defaults$1.encoder, charset, 'value', format));
                 }
-                return [formatter(keyValue) + '=' + valuesJoined];
+                return [formatter(keyValue) + (commaRoundTrip && isArray$2(obj) && valuesArray.length === 1 ? '[]' : '') + '=' + valuesJoined];
             }
             return [formatter(keyValue) + '=' + formatter(encoder(obj, defaults$1.encoder, charset, 'value', format))];
         }
@@ -3495,6 +3497,8 @@ var stringify = function stringify(
         objKeys = sort ? keys.sort(sort) : keys;
     }
 
+    var adjustedPrefix = commaRoundTrip && isArray$2(obj) && obj.length === 1 ? prefix + '[]' : prefix;
+
     for (var j = 0; j < objKeys.length; ++j) {
         var key = objKeys[j];
         var value = typeof key === 'object' && typeof key.value !== 'undefined' ? key.value : obj[key];
@@ -3504,8 +3508,8 @@ var stringify = function stringify(
         }
 
         var keyPrefix = isArray$2(obj)
-            ? typeof generateArrayPrefix === 'function' ? generateArrayPrefix(prefix, key) : prefix
-            : prefix + (allowDots ? '.' + key : '[' + key + ']');
+            ? typeof generateArrayPrefix === 'function' ? generateArrayPrefix(adjustedPrefix, key) : adjustedPrefix
+            : adjustedPrefix + (allowDots ? '.' + key : '[' + key + ']');
 
         sideChannel$1.set(object, step);
         var valueSideChannel = sideChannel();
@@ -3514,6 +3518,7 @@ var stringify = function stringify(
             value,
             keyPrefix,
             generateArrayPrefix,
+            commaRoundTrip,
             strictNullHandling,
             skipNulls,
             encoder,
@@ -3610,6 +3615,10 @@ var stringify_1 = function (object, opts) {
     }
 
     var generateArrayPrefix = arrayPrefixGenerators[arrayFormat];
+    if (opts && 'commaRoundTrip' in opts && typeof opts.commaRoundTrip !== 'boolean') {
+        throw new TypeError('`commaRoundTrip` must be a boolean, or absent');
+    }
+    var commaRoundTrip = generateArrayPrefix === 'comma' && opts && opts.commaRoundTrip;
 
     if (!objKeys) {
         objKeys = Object.keys(obj);
@@ -3630,6 +3639,7 @@ var stringify_1 = function (object, opts) {
             obj[key],
             key,
             generateArrayPrefix,
+            commaRoundTrip,
             options.strictNullHandling,
             options.skipNulls,
             options.encode ? options.encoder : null,
@@ -3923,13 +3933,13 @@ var parse = function (str, opts) {
     stringify: stringify_1
 };/**
  * 输出错误请求信息
- * @param requestName {string} 错误请求的url
+ * @param requestUrl {string} 错误请求的url
  * @param errorDetail {string} 错误请求信息
  */
-function xhrErrorHandler(requestName, errorDetail) {
+function xhrErrorHandler(requestUrl, errorDetail) {
     /* istanbul ignore next */
     var detailStr = errorDetail ? ': ' + errorDetail : '.';
-    console.error("[Request Error] \"".concat(requestName, "\" \u8BF7\u6C42\u5931\u8D25").concat(detailStr));
+    console.error("[Request Error] \"URL: ".concat(requestUrl, "\" Request Fail: ").concat(detailStr));
     return false;
 }
 /**
@@ -3940,28 +3950,28 @@ function errorHandler (errorInfo) {
     var url = errorInfo.config ? errorInfo.config.url : '';
     xhrErrorHandler(url, 
     /* istanbul ignore next */
-    typeof errorInfo === 'string' ? errorInfo : "status: ".concat(errorInfo.status, ", statusText: ").concat(errorInfo.statusText));
+    typeof errorInfo === 'string'
+        ? errorInfo
+        : "status: ".concat(errorInfo.status, ", statusText: ").concat(errorInfo.statusText));
 }/* eslint-disable */
 /*\
-|*|
-|*|  :: cookies.js ::
-|*|
-|*|  A complete cookies reader/writer framework with full unicode support.
-|*|
-|*|  https://developer.mozilla.org/en-US/docs/DOM/document.cookie
-|*|
-|*|  This framework is released under the GNU Public License, version 3 or later.
-|*|  http://www.gnu.org/licenses/gpl-3.0-standalone.html
-|*|
-|*|  Syntaxes:
-|*|
-|*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
-|*|  * docCookies.getItem(name)
-|*|  * docCookies.removeItem(name[, path], domain)
-|*|  * docCookies.hasItem(name)
-|*|  * docCookies.keys()
-|*|
-\*/
+ |*|  :: cookies.js ::
+ |*|
+ |*|  A complete cookies reader/writer framework with full unicode support.
+ |*|
+ |*|  https://developer.mozilla.org/en-US/docs/DOM/document.cookie
+ |*|
+ |*|  This framework is released under the GNU Public License, version 3 or later.
+ |*|  http://www.gnu.org/licenses/gpl-3.0-standalone.html
+ |*|
+ |*|  Syntaxes:
+ |*|
+ |*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+ |*|  * docCookies.getItem(name)
+ |*|  * docCookies.removeItem(name[, path], domain)
+ |*|  * docCookies.hasItem(name)
+ |*|  * docCookies.keys()
+ \*/
 /**
  * 获取一个 Cookie.
  *
@@ -3972,9 +3982,9 @@ function errorHandler (errorInfo) {
  *  cookie.getItem('session')
  */
 function getItem(sKey) {
-    return decodeURIComponent(document.cookie.replace(new RegExp('(?:(?:^|.*;)\\s*' +
+    return (decodeURIComponent(document.cookie.replace(new RegExp('(?:(?:^|.*;)\\s*' +
         encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, '\\$&') +
-        '\\s*\\=\\s*([^;]*).*$)|^.*$'), '$1')) || null;
+        '\\s*\\=\\s*([^;]*).*$)|^.*$'), '$1')) || null);
 }
 /**
  * 写入一个 Cookie.
@@ -3995,7 +4005,10 @@ function setItem(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
     if (vEnd) {
         switch (vEnd.constructor) {
             case Number:
-                sExpires = vEnd === Infinity ? '; expires=Fri, 31 Dec 9999 23:59:59 GMT' : '; max-age=' + vEnd;
+                sExpires =
+                    vEnd === Infinity
+                        ? '; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+                        : '; max-age=' + vEnd;
                 break;
             case String:
                 sExpires = '; expires=' + vEnd;
@@ -4006,7 +4019,14 @@ function setItem(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
         }
     }
     // tslint:disable-next-line:max-line-length
-    document.cookie = encodeURIComponent(sKey) + '=' + encodeURIComponent(sValue) + sExpires + (sDomain ? '; domain=' + sDomain : '') + (sPath ? '; path=' + sPath : '') + (bSecure ? '; secure' : '');
+    document.cookie =
+        encodeURIComponent(sKey) +
+            '=' +
+            encodeURIComponent(sValue) +
+            sExpires +
+            (sDomain ? '; domain=' + sDomain : '') +
+            (sPath ? '; path=' + sPath : '') +
+            (bSecure ? '; secure' : '');
     return true;
 }
 /**
@@ -4023,7 +4043,11 @@ function removeItem(sKey, sPath, sDomain) {
         return false;
     }
     // tslint:disable-next-line:max-line-length
-    document.cookie = encodeURIComponent(sKey) + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' + (sDomain ? '; domain=' + sDomain : '') + (sPath ? '; path=' + sPath : '');
+    document.cookie =
+        encodeURIComponent(sKey) +
+            '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' +
+            (sDomain ? '; domain=' + sDomain : '') +
+            (sPath ? '; path=' + sPath : '');
     return true;
 }
 /**
@@ -4034,7 +4058,9 @@ function removeItem(sKey, sPath, sDomain) {
  */
 function hasItem(sKey) {
     // tslint:disable-next-line:max-line-length
-    return (new RegExp('(?:^|;\\s*)' + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, '\\$&') + '\\s*\\=')).test(document.cookie);
+    return new RegExp('(?:^|;\\s*)' +
+        encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, '\\$&') +
+        '\\s*\\=').test(document.cookie);
 }
 /**
  * 获取所有 Cookie 的 name, 返回为一个数组.
@@ -4043,7 +4069,9 @@ function hasItem(sKey) {
  */
 function keys() {
     // tslint:disable-next-line:max-line-length
-    var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, '').split(/\s*(?:\=[^;]*)?;\s*/);
+    var aKeys = document.cookie
+        .replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, '')
+        .split(/\s*(?:\=[^;]*)?;\s*/);
     for (var nIdx = 0; nIdx < aKeys.length; nIdx++) {
         aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]);
     }
@@ -4054,7 +4082,7 @@ var cookie = {
     setItem: setItem,
     removeItem: removeItem,
     hasItem: hasItem,
-    keys: keys
+    keys: keys,
 };/**
  * 是否为字符串
  */
@@ -4092,7 +4120,6 @@ function objectValues(obj) {
 /**
  * 设置 csrf cookie
  * 会同时在 headers 和 data 中设置
- * 将来会从 data 中移除
  */
 function setCsrfToken(request) {
     var _a;
@@ -4101,7 +4128,7 @@ function setCsrfToken(request) {
     }
     if (!checkCsrfCookie()) {
         // csrf cookie不存在时给警告
-        console.error('[oar error]:', 'CSRF TOKEN 获取失败，请重新登录后再试');
+        console.error('[oar error]:', 'CSRF TOKEN error, please login and retry');
     }
     var csrfKeyName = request.csrfKeyName;
     // 在参数中添加csrf token，将来会移除
@@ -4120,21 +4147,25 @@ function setCsrfToken(request) {
     }
     if (isArray(csrfKeyName)) {
         csrfKeyName.forEach(function (key) {
-            if (typeof request.data === 'object' && !request.data[key] && isString(key)) {
+            if (typeof request.data === 'object' &&
+                !request.data[key] &&
+                isString(key)) {
                 request.data[key] = csrfToken;
             }
         });
     }
 }var visitIdName = 'visit_id';
 /**
- * 设置 visit_id
+ * 在data中设置 visit_id
+ * 根据全局变量__statisObserver.__visitId中记录的值设置
  */
 function setVisitId(request) {
     var VISIT_ID = window['__statisObserver'] && window['__statisObserver']['__visitId'];
     if (!request.data) {
         request.data = {};
     }
-    if (typeof request.data === 'object' && (!request.data[visitIdName] || request.data[visitIdName] === '')) {
+    if (typeof request.data === 'object' &&
+        (!request.data[visitIdName] || request.data[visitIdName] === '')) {
         request.data[visitIdName] = VISIT_ID ? VISIT_ID : '';
     }
 }/**
@@ -4148,7 +4179,7 @@ function isClient() {
 var defaultRequestConfig = {
     withCredentials: true,
     allowCsrf: true,
-    csrfKeyName: ['csrf_token', 'csrf']
+    csrfKeyName: ['csrf_token', 'csrf'],
 };
 /* istanbul ignore next */
 {
@@ -4160,12 +4191,15 @@ Object.assign(axios.defaults, defaultRequestConfig);
  * 对 Oar 注入拦截器
  */
 function setInterceptors(oar) {
+    var _a, _b;
     /**
      * 默认请求拦截器
      */
-    oar.interceptors.request.use(function (request) {
-        // 当 cacheTime > 0 时，允许开启本地接口缓存
-        if (request.method === 'get' && request.cacheTime > 0 && isClient()) ;
+    (_b = (_a = oar === null || oar === void 0 ? void 0 : oar.interceptors) === null || _a === void 0 ? void 0 : _a.request) === null || _b === void 0 ? void 0 : _b.use(function (request) {
+        // 当 cacheTime > 0 时，允许开启本地接口缓存, 不开启
+        if (request.method === 'get' &&
+            request.cacheTime > 0 &&
+            isClient()) ;
         // POST 请求统一设置 CSRF TOKEN & visit_id，强制开启
         if (request.method === 'post' && isClient()) {
             setCsrfToken(request);
@@ -4204,9 +4238,9 @@ function setInterceptors(oar) {
     });
     return oar;
 }
-// 新建 Axios 实例
+// 先新建 Axios 实例
 var Oar = axios.create();
-// 全局 Oar 设置拦截器
+// 再在全局 Oar 设置拦截器
 setInterceptors(Oar);
 // 在调用 Oar.create() 创建实例后，也会对其注入默认拦截器
 Oar.create = function (config) {

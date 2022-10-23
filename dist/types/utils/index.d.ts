@@ -1,2 +1,2 @@
 import errorHandler, { xhrErrorHandler } from './error-handler';
-export { errorHandler, xhrErrorHandler };
+export { errorHandler, xhrErrorHandler, };

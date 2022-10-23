@@ -2,17 +2,17 @@
 
 > By YanPan.
 
-## 基于axios的RESTful网络请求库.
+## 基于 axios 的 RESTful 网络请求库.
 
 ## Oar 配置
 
 `Oar` 作为基于 Axios 的扩展，完全兼容 Axios 用法，并对部分 Axios 默认配置进行了修改及扩展：
 
-| 参数 | 类型 | default | 说明 |
-| --- | --- | --- | --- |
-| withCredentials | boolean | true | 默认允许带 cookie |
-| allowCsrf | boolean | true | 默认 post 请求带 csrf 参数 |
-| csrfKeyName | string | Array<string> | `['csrf_token', 'csrf']` | post 请求的自定义 csrf 校验字段 |
+| 参数            | 类型    | default       | 说明                       |
+| --------------- | ------- | ------------- | -------------------------- | ------------------------------- |
+| withCredentials | boolean | true          | 默认允许带 cookie          |
+| allowCsrf       | boolean | true          | 默认 post 请求带 csrf 参数 |
+| csrfKeyName     | string  | Array<string> | `['csrf_token', 'csrf']`   | post 请求的自定义 csrf 校验字段 |
 
 ## Oar 默认拦截器
 
@@ -20,9 +20,9 @@
 
 request 拦截器
 
-- CSRF防御
-- POST请求参数序列化，以 `application/x-www-form-urlencoded` 格式发送
-- http协议强制转动态协议
+- CSRF 防御
+- POST 请求参数序列化，以 `application/x-www-form-urlencoded` 格式发送
+- http 协议强制转动态协议
 
 response 拦截器
 

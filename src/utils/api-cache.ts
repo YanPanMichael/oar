@@ -62,7 +62,7 @@
 //   } catch (e) {
 //     /* istanbul ignore next */
 //     if (process.env.NODE_ENV === 'development') {
-//       console.warn('[Oar Warning]', '接口缓存失败', e.message)
+//       console.warn('[Oar Warning]', 'Interface cache error', e.message)
 //     }
 //   }
 // }

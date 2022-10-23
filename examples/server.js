@@ -10,7 +10,7 @@ function listDirs(root) {
   var files = fs.readdirSync(root);
   var dirs = [];
 
-  for (var i=0, l=files.length; i<l; i++) {
+  for (var i = 0, l = files.length; i < l; i++) {
     var file = files[i];
     if (file[0] !== '.') {
       var stat = fs.statSync(path.join(root, file));
@@ -26,7 +26,15 @@ function listDirs(root) {
 function getIndexTemplate() {
   var links = dirs.map(function (dir) {
     var url = '/' + dir;
-    return '<li onclick="document.location=\'' + url + '\'"><a href="' + url + '">' + url + '</a></li>';
+    return (
+      '<li onclick="document.location=\'' +
+      url +
+      '\'"><a href="' +
+      url +
+      '">' +
+      url +
+      '</a></li>'
+    );
   });
 
   return (
@@ -65,12 +73,11 @@ function send404(res, body) {
 function pipeFileToResponse(res, file, type) {
   if (type) {
     res.writeHead(200, {
-      'Content-Type': type
+      'Content-Type': type,
     });
   }
   fs.createReadStream(path.join(__dirname, file)).pipe(res);
 }
-
 
 dirs = listDirs(__dirname);
 
@@ -122,7 +129,7 @@ server = http.createServer(function (req, res) {
   if (/\/$/.test(url)) {
     url += 'index.html';
   }
-  
+
   // Format request /get -> /get/index.html
   var parts = url.split('/');
   if (dirs.indexOf(parts[parts.length - 1]) > -1) {
@@ -139,14 +146,13 @@ server = http.createServer(function (req, res) {
   }
 
   // Process server request
-  else if (new RegExp('(' + dirs.join('|') + ')\/server').test(url)) {
+  else if (new RegExp('(' + dirs.join('|') + ')/server').test(url)) {
     if (fs.existsSync(path.join(__dirname, url + '.js'))) {
       require(path.join(__dirname, url + '.js'))(req, res);
     } else {
       send404(res);
     }
-  }
-  else {
+  } else {
     send404(res);
   }
 });

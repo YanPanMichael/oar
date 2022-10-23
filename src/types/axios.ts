@@ -60,7 +60,7 @@ interface AxiosError extends Error {
   response?: AxiosResponse;
 }
 
-type AxiosPromise<T = any> = Promise<AxiosResponse<T>>
+type AxiosPromise<T = any> = Promise<AxiosResponse<T>>;
 
 interface CancelStatic {
   new (message?: string): Cancel;
@@ -91,7 +91,10 @@ interface CancelTokenSource {
 }
 
 interface AxiosInterceptorManager<V> {
-  use(onFulfilled?: (value: V) => V | Promise<V>, onRejected?: (error: any) => any): number;
+  use(
+    onFulfilled?: (value: V) => V | Promise<V>,
+    onRejected?: (error: any) => any,
+  ): number;
   eject(id: number): void;
 }
 
@@ -105,9 +108,21 @@ interface AxiosInstance {
   get<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>;
   delete(url: string, config?: AxiosRequestConfig): AxiosPromise;
   head(url: string, config?: AxiosRequestConfig): AxiosPromise;
-  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T>;
-  put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T>;
-  patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T>;
+  post<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): AxiosPromise<T>;
+  put<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): AxiosPromise<T>;
+  patch<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): AxiosPromise<T>;
 }
 
 interface AxiosStatic extends AxiosInstance {

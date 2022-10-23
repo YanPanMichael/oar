@@ -1,4 +1,5 @@
 // import { cache, setAdapter } from '../utils'
+// import { OarRequestConfig } from '../types';
 
 // /**
 //  * 若本地存在未过期的接口缓存，会直接返回本地缓存数据

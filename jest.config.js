@@ -1,28 +1,21 @@
 module.exports = {
-  name: "mock-oar",
+  name: 'mock-oar',
   verbose: true,
-  testRegex: "/test/.*\\.spec\\.(ts|tsx|js)$",
-  moduleFileExtensions: [
-      "ts",
-      "tsx",
-      "js"
-  ],
+  testRegex: '/test/.*\\.spec\\.(ts|tsx|js)$',
+  moduleFileExtensions: ['ts', 'tsx', 'js'],
   transform: {
-      "\\.(ts|tsx)$": "ts-jest"
+    '\\.(ts|tsx)$': 'ts-jest',
   },
-  testEnvironment: "jsdom",
-  preset: "ts-jest/presets/default-esm",
+  testEnvironment: 'jsdom',
+  preset: 'ts-jest/presets/default-esm',
   globals: {
-    "ts-jest": {
+    'ts-jest': {
       useESM: true,
     },
   },
   moduleNameMapper: {
-    "^(\\.{1,2}/.*)\\.js$": "$1",
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
-  coverageDirectory: "coverage",
-  collectCoverageFrom: [
-    "src/**/*.ts",
-    "!src/**/*.d.ts",
-  ],
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts'],
 };

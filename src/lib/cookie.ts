@@ -1,7 +1,6 @@
 /* eslint-disable */
 
- /*\
- |*|
+/*\
  |*|  :: cookies.js ::
  |*|
  |*|  A complete cookies reader/writer framework with full unicode support.
@@ -18,7 +17,6 @@
  |*|  * docCookies.removeItem(name[, path], domain)
  |*|  * docCookies.hasItem(name)
  |*|  * docCookies.keys()
- |*|
  \*/
 
 /**
@@ -30,14 +28,19 @@
  * @example
  *  cookie.getItem('session')
  */
-export function getItem (sKey): string | null {
-  return decodeURIComponent(
-    document.cookie.replace(
-      new RegExp('(?:(?:^|.*;)\\s*' +
-      encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, '\\$&') +
-      '\\s*\\=\\s*([^;]*).*$)|^.*$'), '$1'
-    )
-  ) || null
+export function getItem(sKey): string | null {
+  return (
+    decodeURIComponent(
+      document.cookie.replace(
+        new RegExp(
+          '(?:(?:^|.*;)\\s*' +
+            encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, '\\$&') +
+            '\\s*\\=\\s*([^;]*).*$)|^.*$',
+        ),
+        '$1',
+      ),
+    ) || null
+  );
 }
 
 /**
@@ -51,25 +54,37 @@ export function getItem (sKey): string | null {
  * @param {any} bSecure
  * @returns {boolean}
  */
-function setItem (sKey, sValue, vEnd?, sPath?, sDomain?, bSecure?): boolean {
-  if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false }
-  let sExpires = ''
+function setItem(sKey, sValue, vEnd?, sPath?, sDomain?, bSecure?): boolean {
+  if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) {
+    return false;
+  }
+  let sExpires = '';
   if (vEnd) {
     switch (vEnd.constructor) {
       case Number:
-        sExpires = vEnd === Infinity ? '; expires=Fri, 31 Dec 9999 23:59:59 GMT' : '; max-age=' + vEnd
-        break
+        sExpires =
+          vEnd === Infinity
+            ? '; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+            : '; max-age=' + vEnd;
+        break;
       case String:
-        sExpires = '; expires=' + vEnd
-        break
+        sExpires = '; expires=' + vEnd;
+        break;
       case Date:
-        sExpires = '; expires=' + vEnd.toUTCString()
-        break
+        sExpires = '; expires=' + vEnd.toUTCString();
+        break;
     }
   }
   // tslint:disable-next-line:max-line-length
-  document.cookie = encodeURIComponent(sKey) + '=' + encodeURIComponent(sValue) + sExpires + (sDomain ? '; domain=' + sDomain : '') + (sPath ? '; path=' + sPath : '') + (bSecure ? '; secure' : '')
-  return true
+  document.cookie =
+    encodeURIComponent(sKey) +
+    '=' +
+    encodeURIComponent(sValue) +
+    sExpires +
+    (sDomain ? '; domain=' + sDomain : '') +
+    (sPath ? '; path=' + sPath : '') +
+    (bSecure ? '; secure' : '');
+  return true;
 }
 
 /**
@@ -81,11 +96,17 @@ function setItem (sKey, sValue, vEnd?, sPath?, sDomain?, bSecure?): boolean {
  * @param {any} sDomain
  * @returns {boolean}
  */
-function removeItem (sKey, sPath, sDomain): boolean {
-  if (!sKey || !hasItem(sKey)) { return false }
+function removeItem(sKey, sPath, sDomain): boolean {
+  if (!sKey || !hasItem(sKey)) {
+    return false;
+  }
   // tslint:disable-next-line:max-line-length
-  document.cookie = encodeURIComponent(sKey) + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' + (sDomain ? '; domain=' + sDomain : '') + (sPath ? '; path=' + sPath : '')
-  return true
+  document.cookie =
+    encodeURIComponent(sKey) +
+    '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' +
+    (sDomain ? '; domain=' + sDomain : '') +
+    (sPath ? '; path=' + sPath : '');
+  return true;
 }
 
 /**
@@ -94,9 +115,13 @@ function removeItem (sKey, sPath, sDomain): boolean {
  * @param {any} sKey
  * @returns {boolean}
  */
-function hasItem (sKey): boolean {
+function hasItem(sKey): boolean {
   // tslint:disable-next-line:max-line-length
-  return (new RegExp('(?:^|;\\s*)' + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, '\\$&') + '\\s*\\=')).test(document.cookie)
+  return new RegExp(
+    '(?:^|;\\s*)' +
+      encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, '\\$&') +
+      '\\s*\\=',
+  ).test(document.cookie);
 }
 
 /**
@@ -104,11 +129,15 @@ function hasItem (sKey): boolean {
  *
  * @returns {[]}
  */
-function keys (): string[] {
+function keys(): string[] {
   // tslint:disable-next-line:max-line-length
-  const aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, '').split(/\s*(?:\=[^;]*)?;\s*/)
-  for (let nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]) }
-  return aKeys
+  const aKeys = document.cookie
+    .replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, '')
+    .split(/\s*(?:\=[^;]*)?;\s*/);
+  for (let nIdx = 0; nIdx < aKeys.length; nIdx++) {
+    aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]);
+  }
+  return aKeys;
 }
 
 export const cookie = {
@@ -116,5 +145,5 @@ export const cookie = {
   setItem,
   removeItem,
   hasItem,
-  keys
-}
+  keys,
+};

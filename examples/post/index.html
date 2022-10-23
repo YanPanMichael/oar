@@ -1,9 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <title>Oar - post example</title>
     <!-- <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/> -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body class="container">
     <h1>oarPst</h1>
@@ -25,7 +30,8 @@
         document.getElementById('post').onclick = function () {
           var data = document.getElementById('data').value;
 
-          oar.post('/post/server', JSON.parse(data))
+          oar
+            .post('/post/server', JSON.parse(data))
             .then(function (res) {
               output.className = 'container';
               output.innerHTML = res.data;
