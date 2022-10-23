@@ -1,6 +1,6 @@
 {
   "name": "@ferry-core/oar",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "description": "A RESTful HTTP request lib with default config",
   "main": "dist/oar.cjs.min.js",
@@ -10,6 +10,12 @@
   "typings": "dist/types/index.d.ts",
   "files": [
     "dist"
+  ],
+  "keywords": [
+    "oar",
+    "fetch",
+    "ferry",
+    "http"
   ],
   "scripts": {
     "test": "cross-env BABEL_ENV=test NODE_ENV=testing jest --coverage -t='ColorPicker'",

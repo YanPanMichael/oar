@@ -1,7 +1,7 @@
 /*!
-* @ferry-core/oar with v0.0.1
+* @ferry-core/oar with v0.0.2
 * Author: Michael Pan
-* Built on 2022-10-24, 00:00:38
+* Built on 2022-10-24, 00:34:38
 * Released under the MIT License Copyright (c) 2022
 */
 var oar=(function(){'use strict';var bind = function bind(fn, thisArg) {

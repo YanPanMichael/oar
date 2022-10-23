@@ -1,7 +1,7 @@
 /*!
-* @ferry-core/oar with v0.0.1
+* @ferry-core/oar with v0.0.2
 * Author: Michael Pan
-* Built on 2022-10-24, 00:00:38
+* Built on 2022-10-24, 00:34:38
 * Released under the MIT License Copyright (c) 2022
 */
 'use strict';var Axios=require('axios'),qs=require('qs');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}function _interopNamespace(e){if(e&&e.__esModule)return e;var n=Object.create(null);if(e){Object.keys(e).forEach(function(k){if(k!=='default'){var d=Object.getOwnPropertyDescriptor(e,k);Object.defineProperty(n,k,d.get?d:{enumerable:true,get:function(){return e[k]}});}})}n["default"]=e;return Object.freeze(n)}var Axios__default=/*#__PURE__*/_interopDefaultLegacy(Axios);var qs__namespace=/*#__PURE__*/_interopNamespace(qs);/**
