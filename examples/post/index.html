@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Oar - post example</title>
+    <!-- <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body class="container">
+    <h1>oarPst</h1>
+
+    <form role="form" class="form" onsubmit="return false;">
+      <div class="form-group">
+        <label for="data">JSON</label>
+        <textarea id="data" class="form-control" rows="5"></textarea>
+      </div>
+      <button id="post" type="button" class="btn btn-primary">POST</button>
+    </form>
+
+    <div id="output" class="container"></div>
+
+    <script src="/oar.iife.js"></script>
+    <script>
+      (function () {
+        var output = document.getElementById('output');
+        document.getElementById('post').onclick = function () {
+          var data = document.getElementById('data').value;
+
+          oar.post('/post/server', JSON.parse(data))
+            .then(function (res) {
+              output.className = 'container';
+              output.innerHTML = res.data;
+            })
+            .catch(function (err) {
+              output.className = 'container text-danger';
+              output.innerHTML = err.message;
+            });
+        };
+      })();
+    </script>
+  </body>
+</html>
